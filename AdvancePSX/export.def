@@ -1,0 +1,24 @@
+EXPORTS
+    ; Explicit exports can go here
+	PSEgetLibType		@2
+	PSEgetLibName		@3
+	PSEgetLibVersion	@4
+	GPUinit				@5
+	GPUshutdown			@6
+	GPUopen				@7
+	GPUclose			@8
+	GPUconfigure		@9
+	GPUabout			@10
+	GPUtest				@11
+	GPUwriteData		@12
+	GPUwriteStatus		@13
+	GPUreadData			@14
+	GPUreadStatus		@15
+	GPUdmaChain			@16
+	GPUgetMode			@17
+	GPUsetMode			@18
+	GPUupdateLace		@19
+	GPUmakeSnapshot     @20
+    GPUwriteDataMem     @23
+    GPUreadDataMem      @24
+	GPUfreeze			@26
