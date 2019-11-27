@@ -404,6 +404,7 @@ long CALLBACK GPUopen(HWND hwndGPU)
 	int new_height = (rw.bottom - rw.top) - (rc.bottom - rc.top) + 480;
 
 	SetWindowPos(hwndGPU, HWND_TOP, 320, 240, new_width, new_height, SWP_NOZORDER | SWP_NOMOVE);
+	while (!ShowCursor(TRUE));
 	gpuReset();
 
 	WinDC = GetDC(WinWnd);
@@ -679,7 +680,7 @@ void CALLBACK GPUupdateLace(void)
 		char sz[1024];
 		float fps = (50.0f * (float)f) / (3.0f * (float)time2) * 60.0f;
 		sprintf(sz, "%.2f fps | %.2f%%", fps, fps / 60.0f * 100.0f);
-		SetWindowText(WinWnd, sz);
+		SetWindowTextA(WinWnd, sz);
 		backtime2 = timeGetTime();
 		f = 0;
 	}
@@ -967,7 +968,7 @@ long CALLBACK GPUgetMode(void)
 
 long CALLBACK GPUconfigure(void)
 {
-	MessageBox(WinWnd, "ê›íËÇ∑ÇÈçÄñ⁄ÇÕÇ†ÇËÇ‹ÇπÇÒ", "Setting", MB_OK);
+	MessageBoxA(WinWnd, "ê›íËÇ∑ÇÈçÄñ⁄ÇÕÇ†ÇËÇ‹ÇπÇÒ", "Setting", MB_OK);
 	return 0;
 }
 
@@ -1008,7 +1009,7 @@ void CALLBACK GPUabout(void)
 {
 	// do not edit this function
 	// modify only Resource Dialog (IDD_ABTDLG)
-	MessageBox(WinWnd, "AdvancePSX GPU Plugin\n2016-2017 daretoku_taka", "About", MB_OK);
+	MessageBoxA(WinWnd, "AdvancePSX GPU Plugin\n2016-2017 daretoku_taka", "About", MB_OK);
 }
 
 long CALLBACK GPUtest(void)
