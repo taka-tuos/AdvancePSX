@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 // comment next line and all syslog(xx,....) will go to gpulog.txt (enable logging)
-#define _COMMENTLOG
+//#define _COMMENTLOG
 
 extern long gpuDataP;
 

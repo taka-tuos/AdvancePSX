@@ -10,6 +10,8 @@
 
 uchar Masking;
 
+extern void(*gpuDriver) (void);
+
 #define	GPU_RGB16(rgb)	\
 	((((rgb)&0xF80000)>>9)|(((rgb)&0xF800)>>6)|(((rgb)&0xF8)>>3))
 
@@ -197,10 +199,10 @@ void arrayline(int *ay, int x1, int y1, int x2, int y2)
 
 	for (int x = x1; x <= x2; x++) {
 		if (steep) {
-			if (x >= 0 && x < 512) ay[x] = y;
+			if (x >= 0 && x < 1024) ay[x] = y;
 		}
 		else {
-			if (y >= 0 && y < 512) ay[y] = x;
+			if (y >= 0 && y < 1024) ay[y] = x;
 		}
 
 		err -= dy;
@@ -212,7 +214,7 @@ void arrayline(int *ay, int x1, int y1, int x2, int y2)
 }
 extern unsigned short *fb;
 
-#define INTERP(xi,xi1,yi,yi1,x) ((( (float)xi1 - (float)xi ) ? ((float)yi + ((( (float)yi1 - (float)yi ) * ( (float)x - (float)xi )) / ( (float)xi1 - (float)xi ))) : ( (float)yi )))
+#define INTERP(xi,xi1,yi,yi1,x) ((( xi1 - xi ) ? (yi + ((( yi1 - yi ) * ( x - xi )) / ( xi1 - xi ))) : ( yi )))
 
 #define R_8(rgb) ((rgb >> 16) & 0xff)
 #define G_8(rgb) ((rgb >>  8) & 0xff)

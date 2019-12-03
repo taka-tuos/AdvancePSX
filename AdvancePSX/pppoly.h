@@ -7,9 +7,14 @@
 	int x[3], y[3];
 #if TEXTURE
 	int u[3], v[3];
+	int us[3][1024];
+	int vs[3][1024];
 #endif
 #if SMOOTH
 	int r[3], g[3], b[3];
+	int rs[3][1024];
+	int gs[3][1024];
+	int bs[3][1024];
 #endif
 	int mii, mai;
 
@@ -118,6 +123,15 @@
 	//ptime = clock();
 	for (int i = 0; i < 3; i++) {
 		arrayline(s[i], x[i], y[i], x[(i + 1) % 3], y[(i + 1) % 3]);
+#if TEXTURE
+		arrayline(us[i], u[i], y[i], u[(i + 1) % 3], y[(i + 1) % 3]);
+		arrayline(vs[i], v[i], y[i], v[(i + 1) % 3], y[(i + 1) % 3]);
+#endif
+#if SMOOTH
+		arrayline(rs[i], r[i], y[i], r[(i + 1) % 3], y[(i + 1) % 3]);
+		arrayline(gs[i], g[i], y[i], g[(i + 1) % 3], y[(i + 1) % 3]);
+		arrayline(bs[i], b[i], y[i], b[(i + 1) % 3], y[(i + 1) % 3]);
+#endif
 	}
 
 	/*qtime = clock() - ptime;
@@ -155,42 +169,57 @@
 			sa = s[0][i];
 
 #if TEXTURE
-			ua = INTERP(y[0], y[1], u[0], u[1], i);
-			va = INTERP(y[0], y[1], v[0], v[1], i);
+			//ua = INTERP(y[0], y[1], u[0], u[1], i);
+			//va = INTERP(y[0], y[1], v[0], v[1], i);
+			ua = us[0][i];
+			va = vs[0][i];
 #endif
 
 #if SMOOTH
-			ra = INTERP(y[0], y[1], r[0], r[1], i);
-			ga = INTERP(y[0], y[1], g[0], g[1], i);
-			ba = INTERP(y[0], y[1], b[0], b[1], i);
+			//ra = INTERP(y[0], y[1], r[0], r[1], i);
+			//ga = INTERP(y[0], y[1], g[0], g[1], i);
+			//ba = INTERP(y[0], y[1], b[0], b[1], i);
+			ra = rs[0][i];
+			ga = gs[0][i];
+			ba = bs[0][i];
 #endif
 		}
 		if (m[1][2] <= i && m[1][3] > i) {
 			sa = s[1][i];
 			
 #if TEXTURE
-			ua = INTERP(y[1], y[2], u[1], u[2], i);
-			va = INTERP(y[1], y[2], v[1], v[2], i);
+			//ua = INTERP(y[1], y[2], u[1], u[2], i);
+			//va = INTERP(y[1], y[2], v[1], v[2], i);
+			ua = us[1][i];
+			va = vs[1][i];
 #endif
 
 #if SMOOTH
-			ra = INTERP(y[1], y[2], r[1], r[2], i);
-			ga = INTERP(y[1], y[2], g[1], g[2], i);
-			ba = INTERP(y[1], y[2], b[1], b[2], i);
+			//ra = INTERP(y[1], y[2], r[1], r[2], i);
+			//ga = INTERP(y[1], y[2], g[1], g[2], i);
+			//ba = INTERP(y[1], y[2], b[1], b[2], i);
+			ra = rs[1][i];
+			ga = gs[1][i];
+			ba = bs[1][i];
 #endif
 		}
 		if (m[2][2] <= i && m[2][3] > i) {
 			sb = s[2][i];
 
 #if TEXTURE
-			ub = INTERP(y[2], y[0], u[2], u[0], i);
-			vb = INTERP(y[2], y[0], v[2], v[0], i);
+			//ub = INTERP(y[2], y[0], u[2], u[0], i);
+			//vb = INTERP(y[2], y[0], v[2], v[0], i);
+			ub = us[2][i];
+			vb = vs[2][i];
 #endif
 
 #if SMOOTH
-			rb = INTERP(y[2], y[0], r[2], r[0], i);
-			gb = INTERP(y[2], y[0], g[2], g[0], i);
-			bb = INTERP(y[2], y[0], b[2], b[0], i);
+			//rb = INTERP(y[2], y[0], r[2], r[0], i);
+			//gb = INTERP(y[2], y[0], g[2], g[0], i);
+			//bb = INTERP(y[2], y[0], b[2], b[0], i);
+			rb = rs[2][i];
+			gb = gs[2][i];
+			bb = bs[2][i];
 #endif
 		}
 
@@ -229,8 +258,23 @@
 
 		if (sb < xmin || sa > xmax) continue;
 
+#if TEXTURE
+		int xu[1024];
+		int xv[1024];
+		arrayline(xu, ua, minx, ub, maxx);
+		arrayline(xv, va, minx, vb, maxx);
+#endif
+#if SMOOTH
+		int xr[1024];
+		int xg[1024];
+		int xb[1024];
+		arrayline(xr, ra, minx, rb, maxx);
+		arrayline(xg, ga, minx, gb, maxx);
+		arrayline(xb, ba, minx, bb, maxx);
+#endif
+
 		if (sa < xmin) sa = xmin;
-		if (sb > xmax) sb = xmax;
+		if (sb >= xmax) sb = xmax;
 
 		for (int j = sa; j < sb; j++) {
 			if (j >= xmax || j < xmin) continue;
@@ -239,14 +283,19 @@
 			Pixel = &((unsigned short *)fb)[i * 1024 + j];
 
 #if TEXTURE
-			int u = INTERP(minx, maxx, ua, ub, j);
-			int v = INTERP(minx, maxx, va, vb, j);
+			//int u = INTERP(minx, maxx, ua, ub, j);
+			//int v = INTERP(minx, maxx, va, vb, j);
+			int u = xu[j];
+			int v = xv[j];
 #endif
 
 #if SMOOTH
-			int r = INTERP(minx, maxx, ra, rb, j);
-			int g = INTERP(minx, maxx, ga, gb, j);
-			int b = INTERP(minx, maxx, ba, bb, j);
+			//int r = INTERP(minx, maxx, ra, rb, j);
+			//int g = INTERP(minx, maxx, ga, gb, j);
+			//int b = INTERP(minx, maxx, ba, bb, j);
+			int r = xr[j];
+			int g = xg[j];
+			int b = xb[j];
 #endif
 #if TEXTURE && SMOOTH //GT3
 			_LR = b;
